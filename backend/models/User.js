@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     phone: String,
     password: String,
     userType: String,
-    registrationDate: { type: Date, default: Date.now },
+    createdAt: { type: Date, default: Date.now },
 });
 
 export default mongoose.model("User", userSchema);

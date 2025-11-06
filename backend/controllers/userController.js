@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// ==================== CREATE USER (Signup) ====================
+//USER (Signup)
 export const createUser = async (req, res) => {
     try {
         const { name, email, phone, password, userType } = req.body;
@@ -15,15 +15,13 @@ export const createUser = async (req, res) => {
         if (existingUser) {
             return res.status(400).json({ message: "Email already registered" });
         }
-
-        // Hash password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const user = new User({ name, email, phone, password: hashedPassword, userType });
         const savedUser = await user.save();
 
         res.status(201).json({
-            message: "✅ User created successfully!",
+            message: "User created successfully!",
             user: {
                 id: savedUser._id,
                 name: savedUser.name,
@@ -32,11 +30,11 @@ export const createUser = async (req, res) => {
             },
         });
     } catch (err) {
-        res.status(500).json({ message: "❌ Server error", error: err.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
 
-// ==================== LOGIN USER ====================
+// LOGIN USER
 export const loginUser = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -54,7 +52,7 @@ export const loginUser = async (req, res) => {
         );
 
         res.json({
-            message: "✅ Login successful",
+            message: "Login successful",
             token,
             user: {
                 id: user._id,
@@ -64,32 +62,32 @@ export const loginUser = async (req, res) => {
             },
         });
     } catch (err) {
-        res.status(500).json({ message: "❌ Server error", error: err.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
 
-// ==================== GET ALL USERS ====================
+//  GET ALL USERS 
 export const getUsers = async (req, res) => {
     try {
         const users = await User.find().select("-password"); // Hide password
         res.json(users);
     } catch (err) {
-        res.status(500).json({ message: "❌ Server error", error: err.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
 
-// ==================== GET SINGLE USER ====================
+// GET SINGLE USER 
 export const getUserById = async (req, res) => {
     try {
         const user = await User.findById(req.params.id).select("-password");
         if (!user) return res.status(404).json({ message: "User not found" });
         res.json(user);
     } catch (err) {
-        res.status(500).json({ message: "❌ Server error", error: err.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
 
-// ==================== UPDATE USER ====================
+// UPDATE USER
 export const updateUser = async (req, res) => {
     try {
         const { name, phone, userType } = req.body;
@@ -101,19 +99,19 @@ export const updateUser = async (req, res) => {
         ).select("-password");
 
         if (!updatedUser) return res.status(404).json({ message: "User not found" });
-        res.json({ message: "✅ User updated", user: updatedUser });
+        res.json({ message: "User updated", user: updatedUser });
     } catch (err) {
-        res.status(500).json({ message: "❌ Server error", error: err.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
 
-// ==================== DELETE USER ====================
+//  DELETE USER 
 export const deleteUser = async (req, res) => {
     try {
         const deleted = await User.findByIdAndDelete(req.params.id);
         if (!deleted) return res.status(404).json({ message: "User not found" });
-        res.json({ message: "✅ User deleted successfully" });
+        res.json({ message: "User deleted successfully" });
     } catch (err) {
-        res.status(500).json({ message: "❌ Server error", error: err.message });
+        res.status(500).json({ message: "Server error", error: err.message });
     }
 };
